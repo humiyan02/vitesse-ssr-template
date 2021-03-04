@@ -12,7 +12,7 @@ const routes = setupLayouts(generatedRoutes)
 // This piece will move route.meta.state to Page props.
 // This can be removed if you prefer Vuex/Pinia instead of Page props.
 routes.forEach((route) => {
-  route.props = (r) => ({ ...(r.meta.state || {}), ...(r.props || {}) })
+  route.props = r => ({ ...(r.meta.state || {}), ...(r.props || {}) })
 })
 
 // https://github.com/frandiox/vite-ssr
@@ -26,10 +26,10 @@ export default viteSSR(
       return locale === DEFAULT_LOCALE ? '/' : `/${locale}/`
     },
   },
-  async (ctx) => {
+  async(ctx) => {
     // install all modules under `modules/`
-    Object.values(import.meta.globEager('./modules/*.ts')).map((i) =>
-      i.install?.(ctx)
+    Object.values(import.meta.globEager('./modules/*.ts')).map(i =>
+      i.install?.(ctx),
     )
 
     const { app, url, router, isClient, initialState, initialRoute } = ctx
@@ -46,13 +46,16 @@ export default viteSSR(
     if (import.meta.env.SSR) {
       initialState.test = 'This should appear in page-view-source'
       // This object can be passed to Vuex store
-    } else {
+      console.log('server')
+    }
+    else {
       // In browser, initialState will be hydrated with data from SSR
+      console.log('browser')
       console.log('Initial state:', initialState)
     }
 
     // As an example, make a getPageProps request before each route navigation
-    router.beforeEach(async (to, from, next) => {
+    router.beforeEach(async(to, from, next) => {
       if (!!to.meta.state && (!import.meta.env.DEV || import.meta.env.SSR)) {
         // This route has state already (from server) so it can be reused.
         return next()
@@ -76,19 +79,20 @@ export default viteSSR(
         // Get our page props from our custom API:
         const res = await fetch(
           `${baseUrl}/api/get-page-props?path=${encodeURIComponent(
-            to.path
+            to.path,
           )}&name=${to.name}&client=${isClient}`,
           {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
             },
-          }
+          },
         )
 
         // During SSR, this is the same as modifying initialState
         to.meta.state = await res.json()
-      } catch (error) {
+      }
+      catch (error) {
         console.error(error)
         // redirect to error route conditionally
       }
@@ -97,5 +101,5 @@ export default viteSSR(
     })
 
     return { head }
-  }
+  },
 )

@@ -3,6 +3,7 @@ import { defineProps, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 
+
 const name = ref('')
 
 const router = useRouter()
