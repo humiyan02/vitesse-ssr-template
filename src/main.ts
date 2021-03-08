@@ -53,6 +53,7 @@ export default viteSSR(
       console.log('browser')
       console.log('Initial state:', initialState)
     }
+    app.provide('initialState', initialState)
 
     // As an example, make a getPageProps request before each route navigation
     router.beforeEach(async(to, from, next) => {

@@ -88,5 +88,8 @@ const toggleLocales = () => {
     >
       <carbon-logo-github />
     </a>
+    <router-link class="icon-btn" to="/test" :title="test">
+      <carbon-campsite />test
+    </router-link>
   </nav>
 </template>
